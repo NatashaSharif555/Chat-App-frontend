@@ -44,33 +44,26 @@ const Signup = () => {
       return;
     }
     console.log(name, email, password, pic);
+    const postData = {
+      name,
+      email,
+      password,
+      pic,
+    };
+
+    const config = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Add any other headers you might need, e.g., authorization token
+      },
+      body: JSON.stringify(postData),
+    };
+    let data;
+
     try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-      const { data } = await axios.post(
-        "/api/user",
-        {
-          name,
-          email,
-          password,
-          pic,
-        },
-        config
-      );
-      console.log(data);
-      toast({
-        title: "Registration Successful",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-        position: "bottom",
-      });
-      localStorage.setItem("userInfo", JSON.stringify(data));
-      setPicLoading(false);
-      history.push("/chats");
+      const response = await fetch("/api/user", config);
+      const data = await response.json();
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -82,6 +75,16 @@ const Signup = () => {
       });
       setPicLoading(false);
     }
+    toast({
+      title: "Registration Successful",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+      position: "bottom",
+    });
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    setPicLoading(false);
+    history.push("/chats");
   };
 
   const postDetails = (pics) => {
@@ -101,7 +104,7 @@ const Signup = () => {
       const data = new FormData();
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
+      data.append("cloud_name", "natashasharif");
       fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
         method: "post",
         body: data,
