@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import {Route} from 'react-router-dom'
 import HomePage  from './Pages/HomePage';
@@ -8,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <Route path="/" component={HomePage} exact></Route>
-      <Route path="/chats" component={ChatPage}></Route>
+      <Route path="/chats" component={ChatPage} ></Route>
     </div>
   );
 }

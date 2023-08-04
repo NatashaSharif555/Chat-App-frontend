@@ -13,6 +13,7 @@ import Login from "../components/Authentication/Login";
 import Signup from "../components/Authentication/Signup";
 import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ChatPage from "./ChatPage";
 
 const HomePage = () => {
   const history = useHistory();
