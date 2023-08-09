@@ -5,6 +5,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 //import {getSender} from '../config/ChatLogics';
 import ChatLoading from "./ChatLoading";
+import {getSender} from '../../config/ChatLogics';
+import GroupChatModal from '../miscellaneous/GroupChatModal';
 
 //import GroupChatModal from "./miscellaneous/GroupChatModal";
 import { Button } from "@chakra-ui/react";
@@ -16,44 +18,42 @@ const MyChats = ({ fetchAgain }) => {
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
   const toast = useToast();
- console.log(user,"user")
+  console.log(user, "user");
   const fetchChats = async () => {
     // console.log(user._id);
     try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-        const  userInfo = JSON.parse(localStorage.getItem('userInfo'))
+      // setUser(userInfo.user);
+      // console.log(userInfo.user,"user")
+      // user = JSON.parse(localStorage.getItem('user')); // Assuming you store user data in localStorage
+      const token = user.token;
 
-          
-        // setUser(userInfo.user);
-        // console.log(userInfo.user,"user")
-        // user = JSON.parse(localStorage.getItem('user')); // Assuming you store user data in localStorage
-        const token = user.token;
-      
-        const headers = {
-          Authorization: `Bearer ${token}`,
-        };
-      
-        const response = await fetch("/chat", {
-          headers,
-        });
-      
-        if (response.ok) {
-          const data = await response.json();
-          setChats(data);
-        } else {
-          throw new Error('Failed to load the chats');
-        }
-      } catch (error) {
-        toast({
-          title: "Error Occurred!",
-          description: "Failed to Load the chats",
-          status: "error",
-          duration: 5000,
-          isClosable: true,
-          position: "bottom-left",
-        });
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      const response = await fetch("/api/chat", {
+        headers,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data, "chat");
+        setChats(data);
+      } else {
+        throw new Error("Failed to load the chats");
       }
-      
+    } catch (error) {
+      toast({
+        title: "Error Occurred!",
+        description: "Failed to Load the chats",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom-left",
+      });
+    }
   };
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const MyChats = ({ fetchAgain }) => {
         alignItems="center"
       >
         My Chats
-        {/* <GroupChatModal>
+        { <GroupChatModal>
           <Button
             d="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
@@ -92,7 +92,7 @@ const MyChats = ({ fetchAgain }) => {
           >
             New Group Chat
           </Button>
-        </GroupChatModal> */}
+        </GroupChatModal> }
       </Box>
       <Box
         d="flex"
@@ -118,9 +118,7 @@ const MyChats = ({ fetchAgain }) => {
                 key={chat._id}
               >
                 <Text>
-                  {/* {!chat.isGroupChat
-                    ? getSender(loggedUser, chat.users)
-                    : chat.chatName} */}
+                   {chat.chatName}
                 </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs">

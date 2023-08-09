@@ -12,12 +12,12 @@ const ChatProvider = ({ children }) => {
   const history = useHistory();
 
   useEffect(() => {
-    const userInfo = JSON.parse(user)
+    const userInfo = JSON.parse(user);
 
-    
     setUser(userInfo.user);
-    console.log(userInfo.user,"info")
-    // if (!userInfo) history.push("/");
+    console.log(userInfo.user, "info");
+    console.log(userInfo, "userinfo");
+    if (!userInfo) history.push("/");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history]);
 
