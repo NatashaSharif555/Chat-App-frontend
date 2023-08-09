@@ -1,7 +1,10 @@
+// import { useState,useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Box, Text } from "@chakra-ui/layout";
+import axios from "axios";
 import {
   Menu,
   MenuButton,
@@ -20,7 +23,6 @@ import { Tooltip } from "@chakra-ui/tooltip";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
 import { useToast } from "@chakra-ui/toast";
 import ChatLoading from "../miscellaneous/ChatLoading";
 import { Spinner } from "@chakra-ui/spinner";
@@ -29,7 +31,7 @@ import NotificationBadge from "react-notification-badge";
 import { Effect } from "react-notification-badge";
 import { getSender } from "../../config/ChatLogics";
 import { ChatState } from "../../Context/ChatProvider";
-// import {UserListItem} from "../UserAvatar/UserListItem";
+import UserListItem from "../userAvatar/UserListItem";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -55,12 +57,13 @@ function SideDrawer() {
     history.push("/");
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (event) => {
+    setSearch(event.target.value);
     if (!search) {
       toast({
         title: "Please Enter something in search",
         status: "warning",
-        duration: 5000,
+        duration: 1000,
         isClosable: true,
         position: "top-left",
       });
@@ -68,17 +71,13 @@ function SideDrawer() {
     }
     try {
       setLoading(true);
-
-      const user = JSON.parse(localStorage.getItem("user")); // getting data from localStorage
-      const token = user.token;
-
-      const headers = {
-        Authorization: `Bearer ${token}`,
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
       };
-
-      const response = await fetch(`/api/user?search=${search}`, { headers });
-      const data = await response.json();
-
+      const { data } = await axios.get(`/api/user?search=${search}`, config);
+      console.log(data);
       setLoading(false);
       setSearchResult(data);
     } catch (error) {
@@ -147,18 +146,37 @@ function SideDrawer() {
         p="5px 10px 5px 10px"
         borderWidth="5px"
       >
-        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-          <Button variant="ghost" onClick={onOpen}>
-            <i className="fas fa-search"></i>
-            <Text d={{ base: "none", md: "flex" }} px={4}>
-              Search User
-            </Text>
-          </Button>
-        </Tooltip>
-        <Text fontSize="2xl" fontFamily="Work sans">
+        {/* Search User Input */}
+        <Box d="flex" alignItems="center" flex="1">
+          <Tooltip
+            label="Search Users to chat"
+            hasArrow
+            placement="bottom-start"
+          >
+            <Box>
+              <Button variant="ghost" onClick={onOpen}>
+                <i className="fas fa-search"></i>
+                <Text d={{ base: "none", md: "flex" }} px={4}>
+                  Search User
+                </Text>
+              </Button>
+            </Box>
+          </Tooltip>
+        </Box>
+
+        {/* Centered Text */}
+        <Text
+          fontSize="2xl"
+          fontFamily="Work sans"
+          fontWeight="bold"
+          textAlign="center"
+          flex="1"
+        >
           Talk-A-Tive
         </Text>
-        <div>
+
+        {/* Profile Icon and Notification Bell */}
+        <Box d="flex" alignItems="center">
           <Menu>
             <MenuButton p={1}>
               <NotificationBadge
@@ -195,15 +213,16 @@ function SideDrawer() {
             </MenuButton>
             <MenuList>
               <ProfileModal user={user}>
-                <MenuItem>My Profile</MenuItem>{" "}
+                <MenuItem>My Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
               <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
-        </div>
+        </Box>
       </Box>
 
+      {/* Rest of your code */}
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
@@ -214,21 +233,21 @@ function SideDrawer() {
                 placeholder="Search by name or email"
                 mr={2}
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={handleSearch}
               />
               <Button onClick={handleSearch}>Go</Button>
             </Box>
-            {/* {loading ? (
+            {loading ? (
               <ChatLoading />
             ) : (
-              searchResult?.map((user) => (
+              searchResult?.map((users) => (
                 <UserListItem
-                  key={user._id}
-                  user={user}
-                  handleFunction={() => accessChat(user._id)}
+                  key={users._id}
+                  user={users}
+                  handleFunction={() => accessChat(users._id)}
                 />
               ))
-            )} */}
+            )}
             <ChatLoading />
             {loadingChat && <Spinner ml="auto" d="flex" />}
           </DrawerBody>

@@ -7,7 +7,7 @@ import ChatBox from "../components/miscellaneous/ChatBox";
 import ChatProvider from "../Context/ChatProvider";
 
 const ChatPage = () => {
-  //const { user } = ChatState();
+  // const { user } = ChatState();
 
   return (
     <div style={{ width: "100%" }}>
@@ -16,8 +16,12 @@ const ChatPage = () => {
       </ChatProvider>
 
       <Box d="flex" justifyContent="space-between" w="100%" h="91.5vh" p="10px">
-      <ChatProvider> <MyChats /></ChatProvider>
-        <ChatBox />
+      <ChatProvider> 
+        <MyChats />
+        </ChatProvider>
+      <ChatProvider>
+           <ChatBox />
+           </ChatProvider>
       </Box>
     </div>
   );

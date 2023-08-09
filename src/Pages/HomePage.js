@@ -24,7 +24,7 @@ const HomePage = () => {
     const userInfo = (localStorage.getItem("userInfo"));
     setUser(userInfo);
 
-    if (!userInfo) history.push("/chats");
+    // if (!userInfo) history.push("/chats");
   }, [history]);
 
   return (
